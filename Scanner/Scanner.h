@@ -3,20 +3,21 @@
 #include <vector>
 #include "../Token/Token.h"
 #include <map>
+#include <variant>
+#include "../Models/ErrorHandler.h"
 namespace LoxCpp{
 
 	class Scanner{
 	public:
 		std::string source;
 		std::vector<Token> tokens;
-		Scanner(std::string source);
+		Scanner(std::string source, ErrorHandler& errorHandler);
 		std::vector<Token> ScanTokens();
-		//TODO: Purely for testing, will replace it with actual error handler soon.
-		std::string ErrorMessage = "";
 	private:
 		int start = 0;
 		int current = 0;
 		int line = 1;
+		ErrorHandler& errorHandler;
 		std::map<std::string, TokenType> keywords;
 
 		//helper functions
@@ -24,7 +25,7 @@ namespace LoxCpp{
 		void scanToken();
 		char advance();
 		void addToken(TokenType type);
-		void addToken(TokenType type, std::string literal);
+		void addToken(TokenType type, Literal literal);
 		bool match(char expected);
 		char peek();
 		void handleString();

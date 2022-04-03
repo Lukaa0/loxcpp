@@ -3,7 +3,8 @@
 
 #include <string>
 #include <string_view>
-
+#include <variant>
+#include "Literal.h"
 namespace LoxCpp
 {
 
@@ -29,10 +30,10 @@ namespace LoxCpp
 	//TODO : Use std::variant for literals
 	public:
 		std::string lexeme;
-		std::string literal;
+		Literal literal;
 		TokenType type;
 		int line;
-		Token(TokenType type, std::string lexeme, std::string literal, int line);
+		Token(TokenType type, std::string lexeme, Literal literal, int line);
 		std::string ToString();
 	};
 }

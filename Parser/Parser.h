@@ -2,6 +2,7 @@
 #include "../Token/Token.h"
 #include "../Expressions/Expression.h"
 #include <memory>
+#include "../Models/ErrorHandler.h"
 
 namespace LoxCpp {
 
@@ -9,6 +10,7 @@ namespace LoxCpp {
 	private:
 		std::vector<Token> tokens;
 		int current = 0;
+		ErrorHandler& errorHandler;
 		std::unique_ptr<Expression> equality();
 		std::unique_ptr<Expression> comparison();
 		std::unique_ptr<Expression> term();
@@ -23,12 +25,13 @@ namespace LoxCpp {
 		bool isAtEnd();
 		bool check(TokenType type);
 		Token peek();
+		void synchronize();
 		Token previous();
 
 
 	public:
 		std::unique_ptr<Expression> Parse();
-		Parser(std::vector<Token> tokens);
+		Parser(std::vector<Token> tokens, ErrorHandler& errorHandler);
 	};
 
 }

@@ -4,9 +4,12 @@
 #include "../Token/Token.h"
 
 namespace LoxCpp {
+
 	class ExpressionVisitor;
 	class BinaryExpression;
 	class UnaryExpression;
+	class LiteralExpression;
+	class GroupingExpression;
 	class Expression;
 
 	class Expression {
@@ -19,6 +22,8 @@ namespace LoxCpp {
 	public:
 		virtual void VisitBinary(BinaryExpression& expression) = 0;
 		virtual void VisitUnary(UnaryExpression& expression) = 0;
+		virtual void VisitLiteral(LiteralExpression& expression) = 0;
+		virtual void VisitGrouping(GroupingExpression& expression) = 0;
 	};
 
 
@@ -33,6 +38,7 @@ namespace LoxCpp {
 	};
 
 	class UnaryExpression : public Expression {
+
 	public:
 		UnaryExpression(Token& op, std::unique_ptr<Expression> right);
 		void Accept(ExpressionVisitor& expressionVisitor) override { expressionVisitor.VisitUnary(*this); }
@@ -40,7 +46,21 @@ namespace LoxCpp {
 		std::unique_ptr<Expression> right;
 		Token op;
 	};
+	class LiteralExpression : public Expression{
+	
+	public:
+		Literal literal;
+		LiteralExpression(Literal literal);
+		void Accept(ExpressionVisitor& expressionVisitor) override { expressionVisitor.VisitLiteral(*this); }
+	};
 
+	class GroupingExpression : public Expression{
+	
+	public:
+		std::unique_ptr<Expression> expression;
+		GroupingExpression(std::unique_ptr<Expression> expression);
+		void Accept(ExpressionVisitor& expressionVisitor) override { expressionVisitor.VisitGrouping(*this); }
+	};
 }
 
 #endif

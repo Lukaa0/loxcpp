@@ -4,7 +4,7 @@
 
 using namespace LoxCpp;
 
-Scanner::Scanner(std::string source) {
+Scanner::Scanner(std::string source, ErrorHandler& errorHandler): errorHandler(errorHandler) {
 	this->source = source;
 	this->keywords = {
 		{"and",     TokenType::AND},
@@ -32,7 +32,7 @@ std::vector<Token> Scanner::ScanTokens()
 		this->start = this->current;
 		this->scanToken();
 	}
-	this->tokens.push_back(Token(TokenType::END, "", "", this->line));
+	this->tokens.push_back(Token(TokenType::END, "", nullptr, this->line));
 	return this->tokens;
 }
 
@@ -100,9 +100,10 @@ void Scanner::scanToken()
 			this->number();
 		else if (this->isAlpha(c))
 			this->id();
-		else
+		else {
 			Error(this->line, "Unexpected character");
-		this->ErrorMessage = "Unexpected character at " + std::to_string(this->line);
+			this->errorHandler.Add("Unexpected character",this->line);
+		}
 	}
 	}
 }
@@ -117,7 +118,7 @@ void Scanner::addToken(TokenType type)
 	addToken(type, "");
 }
 
-void Scanner::addToken(TokenType type, std::string literal)
+void Scanner::addToken(TokenType type, Literal literal)
 {
 	std::string lexeme = this->source.substr(this->start, this->current);
 	this->tokens.push_back(Token(type, lexeme, literal, this->line));
@@ -148,7 +149,7 @@ void Scanner::handleString()
 
 	if (this->isAtEnd()) {
 		Error(this->line, "Missing \" at the end of the string");
-		this->ErrorMessage = "Missing \" at the end of the string";
+		this->errorHandler.Add("Missing \" at the end of the string", this->line);
 		return;
 	}
 
@@ -170,7 +171,6 @@ void Scanner::number()
 		while (this->isDigit(this->peek()))
 			this->advance();
 	}
-	// TODO: after replacing string with std::variant, do this ; std::stof(this->source.substr(this->start, this->current))
 	this->addToken(TokenType::NUMBER, this->source.substr(this->start, this->current));
 
 }

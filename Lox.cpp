@@ -8,21 +8,24 @@
 #include "Token/Token.h"
 #include "Scanner/Scanner.h"
 #include "Parser/Parser.h"
-
-int main()
+#include <gtest/gtest.h>
+#include "test/src/parser_tests.cpp"
+#include "test/src/scanner_tests.cpp"
+int main(int argc, char* argv[])
 {
+	testing::InitGoogleTest(&argc,argv);
 	std::cout << "Current working directory" << std::filesystem::current_path() << std::endl;
 	std::string curdir(std::filesystem::current_path().string());
 	//LoxCpp::RunFile(curdir + "\\test.txt");
-	LoxCpp::Run("var testVar = #\"test string\";");
-	system("PAUSE");
-	return 0;
+	LoxCpp::Run("var testVar = true;");
+	return RUN_ALL_TESTS();
 }
+
+
+
 namespace LoxCpp {
 
 	bool hadError = false;
-
-
 	void RunFile(const std::string path) {
 		std::ifstream stream(path);
 		std::ostringstream  stringStream;
@@ -43,13 +46,14 @@ namespace LoxCpp {
 	}
 
 	bool Run(std::string source) {
-		Scanner scanner(source);
+		ErrorHandler errorHandler;
+		Scanner scanner(source, errorHandler);
 		std::vector<Token> tokens = scanner.ScanTokens();
-		Parser parser = Parser(tokens);
+		Parser parser = Parser(tokens, errorHandler);
 		auto expression = parser.Parse();
 		if (hadError)
 			return hadError;
-		return false;
+		return true;
 	}
 
 	void Error(int line, std::string message) {
