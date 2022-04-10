@@ -1,3 +1,3 @@
 namespace LoxCpp {
-	using Literal = std::variant<std::string, bool, int, std::nullptr_t>;
+	using Literal = std::variant< std::nullptr_t, std::string, bool, int>;
 }

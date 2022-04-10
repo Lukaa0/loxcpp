@@ -27,7 +27,6 @@ namespace LoxCpp
 	};
 
 	class Token{
-	//TODO : Use std::variant for literals
 	public:
 		std::string lexeme;
 		Literal literal;
