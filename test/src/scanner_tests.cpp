@@ -5,6 +5,7 @@ TEST(LoxTests, ScanTokens) {
 	std::string source = "var testStr = \"testStr\";";
 	ErrorHandler errorHandler;
 	Scanner scanner(source, errorHandler);
+	Literal literal = "TEST";
 	EXPECT_NO_THROW(scanner.ScanTokens());
 	EXPECT_FALSE(errorHandler.HasError);
 }

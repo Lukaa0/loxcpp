@@ -135,15 +135,15 @@ void Parser::synchronize() {
 }
 
 
-Token* Parser::consume(TokenType type, std::string& message)
+std::optional<Token> Parser::consume(TokenType type, std::string& message)
 {
 	if (this->check(type))
-		return &this->advance();
+		return this->advance();
 
 	//TODO Implement proper error handling
 	this->errorHandler.Add(message, 0);
 	Error(0, message);
-	return NULL;
+	return std::nullopt;
 }
 
 bool Parser::isAtEnd() {

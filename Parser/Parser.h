@@ -3,6 +3,7 @@
 #include "../Expressions/Expression.h"
 #include <memory>
 #include "../Models/ErrorHandler.h"
+#include <optional>
 
 namespace LoxCpp {
 
@@ -20,7 +21,7 @@ namespace LoxCpp {
 		std::unique_ptr<Expression> expression();
 
 		bool match(std::vector<TokenType> types);
-		Token* consume(TokenType type, std::string& message);
+		std::optional<Token> consume(TokenType type, std::string& message);
 		Token advance();
 		bool isAtEnd();
 		bool check(TokenType type);

@@ -11,13 +11,14 @@
 #include <gtest/gtest.h>
 #include "test/src/parser_tests.cpp"
 #include "test/src/scanner_tests.cpp"
+#include "Interpreter/Interpreter.h"
 int main(int argc, char* argv[])
 {
 	testing::InitGoogleTest(&argc,argv);
 	std::cout << "Current working directory" << std::filesystem::current_path() << std::endl;
 	std::string curdir(std::filesystem::current_path().string());
 	//LoxCpp::RunFile(curdir + "\\test.txt");
-	LoxCpp::Run("var testVar = true;");
+	LoxCpp::RunPrompt();
 	return RUN_ALL_TESTS();
 }
 
@@ -36,6 +37,7 @@ namespace LoxCpp {
 
 	void RunPrompt() {
 		for (;;) {
+			std::cout << std::endl;
 			std::cout << "-> ";
 			std::string line;
 			std::getline(std::cin, line);
@@ -51,6 +53,9 @@ namespace LoxCpp {
 		std::vector<Token> tokens = scanner.ScanTokens();
 		Parser parser = Parser(tokens, errorHandler);
 		auto expression = parser.Parse();
+
+		Interpreter interpreter(errorHandler);
+		interpreter.Interpret(std::move(expression));
 		if (hadError)
 			return hadError;
 		return true;

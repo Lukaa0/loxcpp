@@ -4,7 +4,7 @@
 
 using namespace LoxCpp;
 
-Scanner::Scanner(std::string source, ErrorHandler& errorHandler): errorHandler(errorHandler) {
+Scanner::Scanner(std::string source, ErrorHandler& errorHandler) : errorHandler(errorHandler) {
 	this->source = source;
 	this->keywords = {
 		{"and",     TokenType::AND},
@@ -102,7 +102,7 @@ void Scanner::scanToken()
 			this->id();
 		else {
 			Error(this->line, "Unexpected character");
-			this->errorHandler.Add("Unexpected character",this->line);
+			this->errorHandler.Add("Unexpected character", this->line);
 		}
 	}
 	}
@@ -115,22 +115,23 @@ char Scanner::advance()
 
 void Scanner::addToken(TokenType type)
 {
-	addToken(type, "");
+	Literal ltr = nullptr;
+	addToken(type, ltr);
 }
 
 void Scanner::addToken(TokenType type, Literal literal)
 {
-	std::string lexeme = this->source.substr(this->start, this->current);
+	std::string lexeme = this->source.substr(this->start, this->current - this->start);
 	this->tokens.push_back(Token(type, lexeme, literal, this->line));
 }
 
 bool Scanner::match(char expected)
 {
-	if (!this->isAtEnd() || this->source.at(current) != expected) {
-		current++;
-		return true;
-	}
-	return false;
+	if (isAtEnd() || source.at(current) != expected) return false;
+
+	++current;
+	return true;
+
 }
 
 char Scanner::peek()
@@ -171,7 +172,9 @@ void Scanner::number()
 		while (this->isDigit(this->peek()))
 			this->advance();
 	}
-	this->addToken(TokenType::NUMBER, this->source.substr(this->start, this->current));
+	std::string src = this->source.substr(this->start, this->current);
+	double number = std::stod(src);
+	this->addToken(TokenType::NUMBER, number);
 
 }
 

@@ -15,8 +15,8 @@ std::string Token::ToString() {
 	//TODO: Token enum to string
 	std::string strLiteral = "";
 
-	if (std::holds_alternative<std::string>(literal)) {
-		strLiteral = std::get<std::string>(literal);
+	if (literal.type() == typeid(std::string)) {
+		strLiteral = std::any_cast<std::string>(literal);
 	}
 	return ("token " + lexeme + " " + strLiteral);
 }

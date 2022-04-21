@@ -3,6 +3,7 @@
 
 #include <gtest/gtest.h>
 #include "../../Models/ErrorHandler.h"
+#include "../../Scanner/Scanner.h"
 using ::testing::Test;
 
 #endif  // TEST_INC_COMMON_H_
