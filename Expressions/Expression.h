@@ -12,6 +12,8 @@ namespace LoxCpp {
 	class UnaryExpression;
 	class LiteralExpression;
 	class GroupingExpression;
+	class VarExpression;
+	class AssignExpression;
 	class Expression;
 
 	class Expression {
@@ -26,6 +28,8 @@ namespace LoxCpp {
 		virtual std::any VisitUnary(UnaryExpression& expression) = 0;
 		virtual std::any VisitLiteral(LiteralExpression& expression) = 0;
 		virtual std::any VisitGrouping(GroupingExpression& expression) = 0;
+		virtual std::any VisitVarExpression(VarExpression& expression) = 0;
+		virtual std::any VisitAssignExpression(AssignExpression& expression) = 0;
 	};
 
 
@@ -61,6 +65,24 @@ namespace LoxCpp {
 		GroupingExpression(std::unique_ptr<Expression> expression);
 		std::any Accept(ExpressionVisitor& expressionVisitor) override { return expressionVisitor.VisitGrouping(*this); }
 	};
+
+	class VarExpression : public Expression {
+
+	public:
+		const Token name;
+		VarExpression(Token name);
+		std::any Accept(ExpressionVisitor& expressionVisitor) override { return expressionVisitor.VisitVarExpression(*this); }
+	};
+
+	class AssignExpression : public Expression {
+
+	public:
+		const Token name;
+		const std::unique_ptr<Expression> value;
+		AssignExpression(Token name, std::unique_ptr<Expression> value);
+		std::any Accept(ExpressionVisitor& expressionVisitor) override { return expressionVisitor.VisitAssignExpression(*this); }
+	};
+
 }
 
 #endif

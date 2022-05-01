@@ -10,7 +10,7 @@ namespace LoxCpp{
 	
 	public:
 		static void DefineAst(std::string& outputDir, std::string& baseName, std::vector<std::string>& types);
-		static void DefineType(std::ofstream& writer, std::string& baseName, std::string& className, std::string& fieldList);
+		static void DefineType(std::ofstream& writer, const std::string& baseName, const std::string& className, std::string& fieldList);
 	};
 
 }

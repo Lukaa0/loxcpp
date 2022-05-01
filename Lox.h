@@ -4,7 +4,7 @@
 #include <iostream>
 
 namespace LoxCpp {
-	static void RunFile(const std::string path);
+	static void RunFile(const std::string& path);
 
 	static void RunPrompt();
 
@@ -13,6 +13,7 @@ namespace LoxCpp {
 	void Error(int line, std::string message);
 
 	static void Report(int line, std::string whereAt, std::string message);
+
 }
 
 #endif

@@ -16,12 +16,12 @@ void GenerateAST::DefineAst(std::string& outputDir, std::string& baseName, std::
 	}
 }
 
-void GenerateAST::DefineType(std::ofstream& writer, std::string& baseName, std::string& className, std::string& fieldList)
+void GenerateAST::DefineType(std::ofstream& writer, const std::string& baseName, const std::string& className, std::string& fieldList)
 {
 	writer << "class " + className + " : " + baseName + " {\n";
 	//constr
 	writer << "		" + className + "(" + fieldList + ") {\n";
-	auto fields = Utils::split(fieldList, ", ");
+	const auto fields = Utils::split(fieldList, ", ");
 	for (std::string field : fields) {
 		auto name = Utils::split(field, " ")[1];
 		writer << "		this->" + name + " = " + name + ";\n";
@@ -30,7 +30,7 @@ void GenerateAST::DefineType(std::ofstream& writer, std::string& baseName, std::
 
 	//fields
 
-	for (auto field : fields) {
+	for (const auto& field : fields) {
 		writer << "		const " + field + ";\n";
 	}
 

@@ -4,7 +4,7 @@
 
 using namespace LoxCpp;
 
-Scanner::Scanner(std::string source, ErrorHandler& errorHandler) : errorHandler(errorHandler) {
+Scanner::Scanner(std::string source, LoxException& errorHandler) : errorHandler(errorHandler) {
 	this->source = source;
 	this->keywords = {
 		{"and",     TokenType::AND},

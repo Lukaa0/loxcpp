@@ -9,8 +9,8 @@
 #include "Scanner/Scanner.h"
 #include "Parser/Parser.h"
 #include <gtest/gtest.h>
-#include "test/src/parser_tests.cpp"
-#include "test/src/scanner_tests.cpp"
+#include <any>
+#include <utility>
 #include "Interpreter/Interpreter.h"
 int main(int argc, char* argv[])
 {
@@ -23,11 +23,11 @@ int main(int argc, char* argv[])
 }
 
 
-
 namespace LoxCpp {
 
 	bool hadError = false;
-	void RunFile(const std::string path) {
+	Interpreter interpreter;
+	void RunFile(const std::string& path) {
 		std::ifstream stream(path);
 		std::ostringstream  stringStream;
 		stringStream << stream.rdbuf();
@@ -41,21 +41,29 @@ namespace LoxCpp {
 			std::cout << "-> ";
 			std::string line;
 			std::getline(std::cin, line);
-			if (line.size() == 0)
+			if (line.empty())
 				break;
 			Run(line);
 		}
 	}
 
 	bool Run(std::string source) {
-		ErrorHandler errorHandler;
-		Scanner scanner(source, errorHandler);
-		std::vector<Token> tokens = scanner.ScanTokens();
-		Parser parser = Parser(tokens, errorHandler);
-		auto expression = parser.Parse();
+		LoxException loxException{};
+		try {
+			Scanner scanner(std::move(source), loxException);
+			const std::vector<Token> tokens = scanner.ScanTokens();
+			Parser parser = Parser(tokens, loxException);
+			auto statements = parser.Parse();
 
-		Interpreter interpreter(errorHandler);
-		interpreter.Interpret(std::move(expression));
+			interpreter.Interpret(std::move(statements));
+		}
+		catch(LoxException& err)
+		{
+			for(auto error : err.Errors)
+			{
+				Error(error.Line, error.ErrorMessage);
+			}
+		}
 		if (hadError)
 			return hadError;
 		return true;
@@ -65,9 +73,10 @@ namespace LoxCpp {
 		Report(line, "", message);
 	}
 
-	void Report(int line, std::string whereAt, std::string message) {
+	void Report(const int line, const std::string whereAt, const std::string message) {
 
 		std::cout << "[line " << line << "] Error " << whereAt << ": " << message;
 		hadError = true;
 	}
+
 }
